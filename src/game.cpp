@@ -1,6 +1,9 @@
 #include "game.h"
 #include <iostream>
 #include "SDL.h"
+#include "button.hpp"
+
+bool restart = true;
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
     : snake(grid_width, grid_height),
@@ -26,6 +29,17 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     controller.HandleInput(running, snake);
     Update();
     renderer.Render(snake, food);
+
+    if (!snake.alive){
+      // pop up a button asking: retry or quit?
+      Button bt(renderer.getWindow());
+      if (bt.getButtonId()==0)
+        return;
+      else{
+        running = false;
+        restart = false;
+      }
+    }
 
     frame_end = SDL_GetTicks();
 
