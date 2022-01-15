@@ -1,3 +1,12 @@
+## Update:
+The Snake game was extended with followed new features:
+1. It is possible to restart or quit the game with a pop up button:
+  * new class button.hpp, button.cpp
+  * modified game.h/cpp, main.cpp, renderer.h/cpp
+2. There is now bound check for the snake (no wrap now)
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
 # CPPND: Capstone Snake Game Example
 
 This is a starter repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
