@@ -4,7 +4,7 @@ The Snake game was extended with followed new features:
   * new class button.hpp, button.cpp
   * modified game.h/cpp, main.cpp, renderer.h/cpp
 2. There is now bound check for the snake (no wrap now)
-
+3. Tring to add a snake AI
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 # CPPND: Capstone Snake Game Example
