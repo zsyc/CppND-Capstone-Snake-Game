@@ -39,3 +39,44 @@ void Controller::HandleInput(bool &running, Snake &snake) const {
     }
   }
 }
+
+vector<Snake::Direction> Controller::AutoMov(const vector<vector<int>> &solution, Snake &snake) const {
+  vector<Snake::Direction> step;
+
+  auto dir = [](vector<int>a, vector<int>b){
+    if (a[0]!=b[0])
+      return b[0]>a[0] ? Snake::Direction::kRight : Snake::Direction::kLeft;
+    else
+      return b[1]>a[1] ? Snake::Direction::kDown : Snake::Direction::kUp;
+  };
+
+  for (int i=1; i<solution.size();++i){
+    step.push_back(dir(solution[i-1], solution[i]));
+  }
+
+  
+  for (auto i:step){
+    switch (i)
+    {
+      case Snake::Direction::kUp:
+        std::cout<<"Up ";
+        break;
+
+      case Snake::Direction::kDown:
+        std::cout<<"Down ";
+        break;
+
+      case Snake::Direction::kLeft:
+        std::cout<<"Left ";
+        break;
+
+      case Snake::Direction::kRight:
+        std::cout<<"Right ";
+        break;    
+      
+      default:
+        break;
+    }
+  }
+    return step;
+}

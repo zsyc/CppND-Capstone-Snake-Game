@@ -2,8 +2,16 @@
 #include <iostream>
 #include "SDL.h"
 #include "button.hpp"
+#include "asearch.hpp"
 
-bool restart = true;
+//temp
+#include <chrono>
+#include <thread>
+using namespace std::this_thread;
+using namespace std::chrono_literals;
+
+
+int restart = 1;
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
     : snake(grid_width, grid_height),
@@ -35,9 +43,14 @@ void Game::Run(Controller const &controller, Renderer &renderer,
       Button bt(renderer.getWindow());
       if (bt.getButtonId()==0)
         return;
-      else{
+      else if (bt.getButtonId()==1){
         running = false;
-        restart = false;
+        restart = -1;
+        return;
+      }
+      else{
+        restart = 0;
+        return;
       }
     }
 
@@ -99,3 +112,57 @@ void Game::Update() {
 
 int Game::GetScore() const { return score; }
 int Game::GetSize() const { return snake.size; }
+
+void Game::RunAI(Controller const &controller, Renderer &renderer, std::size_t target_frame_duration) {
+  Uint32 title_timestamp = SDL_GetTicks();
+  Uint32 frame_start;
+  Uint32 frame_end;
+  Uint32 frame_duration;
+  int frame_count = 0;
+
+  bool running = true;
+  while (running) {
+    frame_start = SDL_GetTicks();
+
+    int start[2] = {static_cast<int>(snake.head_x), static_cast<int>(snake.head_y)};  
+    int goal[2] = {GetFood().x, GetFood().y};
+
+    //coordinte is not the same with Asearch-Array
+    int startR[2] = {static_cast<int>(snake.head_y), static_cast<int>(snake.head_x)};  
+    int goalR[2] = {GetFood().y, GetFood().x};
+    vector<vector<State>> path{};
+    vector<Snake::Direction> step;
+
+    ASearch route(renderer.getGridHeight(), renderer.getGridWidth());
+    route.setObstacle(snake.body);
+    path = route.Search(route.sMap, startR, goalR);
+    route.Draw(path);
+
+    if (path.size()!=0){      
+      step = controller.AutoMov(route.solution, snake);
+      for (int i=0; i<step.size(); ++i){
+        snake.direction = step[i];
+        while(static_cast<int>(snake.head_x)!= route.solution[i+1][0] || static_cast<int>(snake.head_y)!= route.solution[i+1][1]){
+          Update();
+          renderer.Render(snake, food);
+          frame_end = SDL_GetTicks();
+          frame_count++;
+          frame_duration = frame_end - frame_start;
+          if (frame_end - title_timestamp >= 1000) {
+            renderer.UpdateWindowTitle(score, frame_count);
+            frame_count = 0;
+            title_timestamp = frame_end;
+          }
+          if (frame_duration < target_frame_duration) 
+            SDL_Delay(target_frame_duration - frame_duration);
+        }
+      }
+      Update();
+      renderer.Render(snake, food);
+      //running = false;
+    }
+    else
+      running = false;
+  }
+}
+

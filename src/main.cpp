@@ -10,15 +10,19 @@ int main() {
   constexpr std::size_t kScreenHeight{640};
   constexpr std::size_t kGridWidth{32};
   constexpr std::size_t kGridHeight{32};
-  extern bool restart;
+  extern int restart;
 
   Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
   Controller controller;
-  while (restart){
+  while (restart==1){
     Game game(kGridWidth, kGridHeight);
     game.Run(controller, renderer, kMsPerFrame);
     std::cout << "Score: " << game.GetScore() << "\n";
     std::cout << "Size: " << game.GetSize() << "\n";
+  }
+  if (restart == -1){
+    Game game(kGridWidth, kGridHeight);
+    game.RunAI(controller, renderer, kMsPerFrame);
   }
   std::cout << "Game has terminated successfully!\n";
   return 0;
