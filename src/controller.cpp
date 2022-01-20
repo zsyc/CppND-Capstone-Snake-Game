@@ -54,7 +54,7 @@ vector<Snake::Direction> Controller::AutoMov(const vector<vector<int>> &solution
     step.push_back(dir(solution[i-1], solution[i]));
   }
 
-  
+  // This part is only for test
   for (auto i:step){
     switch (i)
     {

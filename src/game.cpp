@@ -142,6 +142,7 @@ void Game::RunAI(Controller const &controller, Renderer &renderer, std::size_t t
       step = controller.AutoMov(route.solution, snake);
       for (int i=0; i<step.size(); ++i){
         snake.direction = step[i];
+        // point {solution[i+1][0], solution[i+1][1]} is the next check point in path
         while(static_cast<int>(snake.head_x)!= route.solution[i+1][0] || static_cast<int>(snake.head_y)!= route.solution[i+1][1]){
           Update();
           renderer.Render(snake, food);
